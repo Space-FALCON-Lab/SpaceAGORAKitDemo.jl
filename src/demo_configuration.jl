@@ -12,10 +12,10 @@ seconds with attitude propagation. It needs no native GRAM, SPICE kernels or
 private data.
 
 - Guidance: an `AlgorithmGuidance` runs a `PeriapsisRaisePlanner` with
-  `target_periapsis_altitude_m`, with one request at the run's start. SpaceAGORA's
-  burn-plan family validates the proposed burn and installs it in the burn
-  scheduler, a `BaseThrusterModel` (50 N, 300 s specific impulse) that plans no
-  burn of its own.
+  `target_periapsis_altitude_m`, with one request (reason `:initial`) at the run's
+  start. SpaceAGORA's burn-plan family validates the proposed burn and installs it
+  in the burn scheduler, a `BaseThrusterModel` (50 N, 300 s specific impulse) that
+  plans no burn of its own.
 - Navigation: an `AttitudeFilter`, ticking every second, reads a `RateGyro`
   (sampled every second, with white noise `gyro_noise`, a bias that starts at
   `gyro_bias_rps` and walks with `gyro_bias_walk`, seed `gyro_seed`) and a
@@ -50,7 +50,7 @@ function demo_configuration(; mission_time_s::Real=400.0, target_periapsis_altit
     scheduler = BaseThrusterModel(thrust=[50.0], direction=[0.0], Δv=[0.0], start_burn_time=[-1.0],
                                   stop_burn_time=[-1.0], Isp=[300.0])
     planner = AlgorithmGuidance(algorithm=PeriapsisRaisePlanner(target_periapsis_altitude_m=target_periapsis_altitude_m),
-                                spacecraft_index=1, events=[AlgorithmEvent(0.0)])
+                                spacecraft_index=1, events=[AlgorithmEvent(0.0; reason=:initial)])
 
     return SimulationConfiguration(
         simulation_settings=SimulationSettings(results=false, verbose=false, generate_plots=false, normalize=false),

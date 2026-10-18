@@ -14,7 +14,8 @@ solution = run_simulation(configuration; isolate_state=false, return_solution=tr
 binding = only(algorithm_run_report(solution).bindings)
 println("Planner: ", binding.algorithm)
 for record in binding.records
-    println("  t = ", record.time_s, " s: ", record.event, " (request ", record.request_id, ", ", record.reason, ")")
+    request = record.event === :request ? record.request : record     # a request record holds the request
+    println("  t = ", record.time_s, " s: ", record.event, " (request ", request.request_id, ", reason ", request.reason, ")")
 end
 plan = only(filter(record -> record.event === :installed, binding.records)).product
 println("Installed burn: Δv ", round(plan.delta_v_mps, digits=3), " m/s from ", round(plan.start_burn_s, digits=2),
