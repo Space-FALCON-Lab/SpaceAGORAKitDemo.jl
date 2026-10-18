@@ -11,8 +11,7 @@ The repository was generated from SpaceAGORA's package starter
 `SpaceAGORASource.toml`; the first commit is the starter exactly as generated.
 Every later change is in `src/`, `test/`, `examples/` or this README. No SpaceAGORA
 code is copied here, and the code uses only SpaceAGORA's public names (the
-workflow's scan refuses internal ones). SpaceAGORA runs this repository against its
-`main` branch every night and against each release candidate.
+workflow's scan refuses internal ones).
 
 ## The three parts
 
