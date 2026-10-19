@@ -52,15 +52,17 @@ and build a separate environment that develops that commit:
 
 ```bash
 git clone https://github.com/Space-FALCON-Lab/SpaceAGORAKitDemo.jl.git
-GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/Space-FALCON-Lab/SpaceAGORA.jl.git
+git clone -c lfs.fetchexclude='*' https://github.com/Space-FALCON-Lab/SpaceAGORA.jl.git
 git -C SpaceAGORA.jl checkout "$(sed -n 's/^rev = "\(.*\)"/\1/p' SpaceAGORAKitDemo.jl/SpaceAGORASource.toml)"
 julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl package SpaceAGORAKitDemo.jl SpaceAGORAKitDemo-env --manifest core
 ```
 
-`GIT_LFS_SKIP_SMUDGE=1` skips SpaceAGORA's large data files, which this repository
-does not use. The last command downloads the packages SpaceAGORA's manifest records
-that your Julia depot does not hold yet. Then run the tests as CI does, with two
-threads so that the conformance checks compare concurrent runs with sequential ones:
+`-c lfs.fetchexclude='*'` keeps that clone, its checkouts and later pulls from
+downloading SpaceAGORA's large data files (Git LFS), which this repository does not
+use; without Git LFS installed the setting does nothing, and nothing is downloaded
+either. The last command downloads the packages SpaceAGORA's manifest records that
+your Julia depot does not hold yet. Then run the tests as CI does, with two threads
+so that the conformance checks compare concurrent runs with sequential ones:
 
 ```bash
 cd SpaceAGORAKitDemo.jl/test
