@@ -51,6 +51,16 @@ function SpaceAGORA.initialize_control!(c::PDPointingController, u, p, t)
     return nothing
 end
 
+# A checkpoint saves the held command and its tick time as plain data, and a run
+# resumed from the checkpoint puts them back, so it holds the same torque until its
+# next tick as the uninterrupted run does.
+SpaceAGORA.checkpoint_state(c::PDPointingController) = (torque_body=c.torque_body, tick_s=c.tick_s)
+function SpaceAGORA.restore_checkpoint_state!(c::PDPointingController, data)
+    c.torque_body = NTuple{3, Float64}(data.torque_body)
+    c.tick_s = Float64(data.tick_s)
+    return nothing
+end
+
 # The tick: the control law on the estimate, limited, then held.
 function SpaceAGORA.update_control!(c::PDPointingController, u, p, t, spacecraft_index)
     e = c.estimate

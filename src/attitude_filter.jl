@@ -84,6 +84,27 @@ function SpaceAGORA.initialize_navigation!(f::AttitudeFilter, u, p, t)
     return nothing
 end
 
+# A checkpoint saves the estimate the filter writes (it owns the shared
+# `AttitudeEstimate`) as plain data, and a run resumed from the checkpoint puts it
+# back after the reset above, so the filter and its controllers go on from the
+# estimate the uninterrupted run had.
+function SpaceAGORA.checkpoint_state(f::AttitudeFilter)
+    e = f.estimate
+    return (q=copy(e.q), ω_body=copy(e.ω_body), bias=copy(e.bias), covariance=copy(e.covariance),
+            time_s=e.time_s, star_tracker_time_s=e.star_tracker_time_s)
+end
+
+function SpaceAGORA.restore_checkpoint_state!(f::AttitudeFilter, data)
+    e = f.estimate
+    e.q = collect(Float64, data.q)
+    e.ω_body = collect(Float64, data.ω_body)
+    e.bias = collect(Float64, data.bias)
+    e.covariance = Matrix{Float64}(data.covariance)
+    e.time_s = Float64(data.time_s)
+    e.star_tracker_time_s = Float64(data.star_tracker_time_s)
+    return nothing
+end
+
 # The tick: fuse a star-tracker reading taken since the last tick at its own time,
 # then bring the estimate to the tick's time. Sensors sample before navigation
 # ticks at the same time.
