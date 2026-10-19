@@ -9,9 +9,11 @@ workflow.
 The repository was generated from SpaceAGORA's package starter
 (`scripts/new_contributor_repository.jl package`) at the SpaceAGORA commit in
 `SpaceAGORASource.toml`; the first commit is the starter exactly as generated.
-Every later change is in `src/`, `test/`, `examples/` or this README. No SpaceAGORA
-code is copied here, and the code uses only SpaceAGORA's public names (the
-workflow's scan refuses internal ones).
+Every later change is in `src/`, `test/`, `examples/` or this README, except for
+two metadata files the starter leaves for its author: `LICENSE` (MIT, as for
+SpaceAGORA) and the authors in `CITATION.cff`. No SpaceAGORA code is copied here,
+and the code uses only SpaceAGORA's public names (the workflow's scan refuses
+internal ones).
 
 ## The three parts
 
