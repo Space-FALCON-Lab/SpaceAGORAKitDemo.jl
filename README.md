@@ -59,22 +59,27 @@ and SpaceAGORA side by side, check SpaceAGORA out at the commit this repository 
 
 ```bash
 git clone https://github.com/Space-FALCON-Lab/SpaceAGORAKitDemo.jl.git
-git clone -c lfs.fetchexclude='*' https://github.com/Space-FALCON-Lab/SpaceAGORA.jl.git
+git clone --filter=blob:none -c lfs.fetchexclude="*" https://github.com/Space-FALCON-Lab/SpaceAGORA.jl.git
 git -C SpaceAGORA.jl checkout "$(sed -n 's/^rev = "\(.*\)"/\1/p' SpaceAGORAKitDemo.jl/SpaceAGORASource.toml)"
 julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl package SpaceAGORAKitDemo.jl SpaceAGORAKitDemo-env --manifest core
 ```
 
-`-c lfs.fetchexclude='*'` keeps that clone, its checkouts and later pulls from
-downloading SpaceAGORA's large data files (Git LFS), which this repository does not
-use; without Git LFS installed the setting does nothing, and nothing is downloaded
-either. The last command downloads the packages SpaceAGORA's manifest records that
-your Julia depot does not hold yet, and refuses an environment directory that
+`--filter=blob:none` skips the contents of old file versions: Git downloads the
+files of a commit when you check it out. `-c lfs.fetchexclude="*"` keeps that clone,
+its checkouts and later pulls from downloading SpaceAGORA's large data files (Git
+LFS), which this repository does not use; without Git LFS installed the setting does
+nothing, and nothing is downloaded either. The third line reads the pinned commit
+from `SpaceAGORASource.toml` with `sed`, so it needs bash or zsh (on Windows, Git
+Bash). In PowerShell or Command Prompt, name the commit instead,
+`git -C SpaceAGORA.jl checkout <the rev in SpaceAGORAKitDemo.jl/SpaceAGORASource.toml>`;
+every other command on this page runs there as written. The last command downloads
+the packages SpaceAGORA's manifest records that your Julia depot does not hold yet, and refuses an environment directory that
 already exists and is not empty. Then run the tests as CI does, with two threads so
 that the conformance checks compare concurrent runs with sequential ones (the first
 run also compiles SpaceAGORA and its dependencies, which takes a while):
 
 ```bash
-JULIA_NUM_THREADS=2 julia --project=SpaceAGORAKitDemo-env --depwarn=error SpaceAGORAKitDemo.jl/test/runtests.jl
+julia --threads=2 --project=SpaceAGORAKitDemo-env --depwarn=error SpaceAGORAKitDemo.jl/test/runtests.jl
 ```
 
 `Pkg.test("SpaceAGORAKitDemo")` in that environment works too, but it runs with
