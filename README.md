@@ -7,13 +7,19 @@ their own, and tested with SpaceAGORA's conformance checks and its reusable CI
 workflow.
 
 The repository was generated from SpaceAGORA's package starter
-(`scripts/new_contributor_repository.jl package`) at the SpaceAGORA commit in
-`SpaceAGORASource.toml`; the first commit is the starter exactly as generated.
-Every later change is in `src/`, `test/`, `examples/` or this README, except for
-two metadata files the starter leaves for its author: `LICENSE` (MIT, as for
-SpaceAGORA) and the authors in `CITATION.cff`. No SpaceAGORA code is copied here,
-and the code uses only SpaceAGORA's public names (the workflow's scan refuses
-internal ones).
+(`scripts/new_contributor_repository.jl package`) at SpaceAGORA 0.3.1 (commit
+`c7db8b6fbb2843a3828ccc3003f68da06ca47848`); the first commit is the starter
+exactly as generated. Every later change is in `src/`, `test/`, `examples/` or this
+README, except for two metadata files the starter leaves for its author (`LICENSE`,
+MIT as for SpaceAGORA, and the authors in `CITATION.cff`) and the SpaceAGORA pin,
+which moves with each release it is tested against (see "Moving to another
+SpaceAGORA release" below). No SpaceAGORA code is copied here, and the code uses
+only SpaceAGORA's public names (the workflow's scan refuses internal ones).
+
+This version is developed and tested against **SpaceAGORA v0.5.0** (commit
+`41cd1f2ef7bcd4ef51f556487911e797ca411867`): the commit in `SpaceAGORASource.toml`
+and in the workflow call in `.github/workflows/ci.yml`, with `[compat]` admitting
+the 0.5 release series.
 
 ## The three parts
 
@@ -46,9 +52,10 @@ says nothing about whether the methods are right for a mission.
 
 ## Set up and test
 
-You need Julia 1.12 and git. In an empty folder, clone this repository and
-SpaceAGORA side by side, check SpaceAGORA out at the commit this repository pins,
-and build a separate environment that develops that commit:
+You need Julia 1.12 and git. Every command below runs from one folder, the one that
+holds the two clones and the environment. In an empty folder, clone this repository
+and SpaceAGORA side by side, check SpaceAGORA out at the commit this repository pins
+(the v0.5.0 release), and build a separate environment that develops that commit:
 
 ```bash
 git clone https://github.com/Space-FALCON-Lab/SpaceAGORAKitDemo.jl.git
@@ -61,12 +68,13 @@ julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_envi
 downloading SpaceAGORA's large data files (Git LFS), which this repository does not
 use; without Git LFS installed the setting does nothing, and nothing is downloaded
 either. The last command downloads the packages SpaceAGORA's manifest records that
-your Julia depot does not hold yet. Then run the tests as CI does, with two threads
-so that the conformance checks compare concurrent runs with sequential ones:
+your Julia depot does not hold yet, and refuses an environment directory that
+already exists and is not empty. Then run the tests as CI does, with two threads so
+that the conformance checks compare concurrent runs with sequential ones (the first
+run also compiles SpaceAGORA and its dependencies, which takes a while):
 
 ```bash
-cd SpaceAGORAKitDemo.jl/test
-JULIA_NUM_THREADS=2 julia --project=../../SpaceAGORAKitDemo-env --depwarn=error runtests.jl
+JULIA_NUM_THREADS=2 julia --project=SpaceAGORAKitDemo-env --depwarn=error SpaceAGORAKitDemo.jl/test/runtests.jl
 ```
 
 `Pkg.test("SpaceAGORAKitDemo")` in that environment works too, but it runs with
@@ -74,8 +82,7 @@ bounds checking, which recompiles every package. The example prints the planner'
 run records and what the run did:
 
 ```bash
-cd SpaceAGORAKitDemo.jl
-julia --project=../SpaceAGORAKitDemo-env examples/run_in_simulation.jl
+julia --project=SpaceAGORAKitDemo-env SpaceAGORAKitDemo.jl/examples/run_in_simulation.jl
 ```
 
 ## The tests
@@ -86,7 +93,11 @@ julia --project=../SpaceAGORAKitDemo-env examples/run_in_simulation.jl
   (`test_navigation_model`), and the controller paired with a filter
   (`test_control_model`). They cover the pre-run hook check, repeatable and
   concurrent runs, deep copies, independence from the global random number
-  generator, the reset at each run's start and the purity of the output hook.
+  generator, the reset at each run's start, the purity of the output hook, and a
+  run resumed from a checkpoint against an uninterrupted one
+  (`checkpoint_round_trip`, required from SpaceAGORA 0.5.0). The controller and the
+  filter carry their run state through a checkpoint with `checkpoint_state` and
+  `restore_checkpoint_state!`.
 - `test/method_tests.jl` holds the author's tests of the methods: the attitude
   helpers against SpaceAGORA's convention, the planner against the closed forms it
   uses and the cases it must refuse, and what the filter and the controller do in the
@@ -98,15 +109,25 @@ julia --project=../SpaceAGORAKitDemo-env examples/run_in_simulation.jl
   `isolate_state=false` giving equal trajectories and estimates, and the sensor seeds
   repeating or changing the estimate.
 
-## Moving to another SpaceAGORA commit
+## Moving to another SpaceAGORA release
 
 The pinned commit appears three times, and the workflow checks that they agree:
 `rev` in `SpaceAGORASource.toml`, and the ref after `@` and `spaceagora-rev` in
 `.github/workflows/ci.yml`. `version` in `SpaceAGORASource.toml` is SpaceAGORA's
 version at that commit, and `[compat]` in `Project.toml` admits one SpaceAGORA
-release series. To move to a release, replace the commit in both files, set
-`version` to the release, and change the `SpaceAGORA` entry in `[compat]` when the
-series changes (for example from `"0.3"` to `"0.4"`).
+release series. SpaceAGORA's `repin` command rewrites all of them for the release
+checked out beside this repository, and changes `[compat]` when the series
+changes. From the folder that holds both clones:
+
+```bash
+git -C SpaceAGORA.jl fetch --tags
+git -C SpaceAGORA.jl checkout <the release tag, for example v0.5.0>
+julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl repin package SpaceAGORAKitDemo.jl
+```
+
+Then build the environment again into a new directory and run the tests. This is
+how the repository moved from SpaceAGORA 0.3.1 to 0.5.0. `repin` exists from
+SpaceAGORA 0.4.0 on.
 
 ## Claims
 
