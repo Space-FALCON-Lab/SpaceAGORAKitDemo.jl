@@ -70,9 +70,10 @@ its checkouts and later pulls from downloading SpaceAGORA's large data files (Gi
 LFS), which this repository does not use; without Git LFS installed the setting does
 nothing, and nothing is downloaded either. The third line reads the pinned commit
 from `SpaceAGORASource.toml` with `sed`, so it needs bash or zsh (on Windows, Git
-Bash). In PowerShell or Command Prompt, name the commit instead,
-`git -C SpaceAGORA.jl checkout <the rev in SpaceAGORAKitDemo.jl/SpaceAGORASource.toml>`;
-every other command on this page runs there as written. The last command downloads
+Bash). In PowerShell or Command Prompt, name the commit instead: run
+`git -C SpaceAGORA.jl checkout` followed by the 40-character `rev` that
+`SpaceAGORAKitDemo.jl/SpaceAGORASource.toml` records. Every other command on this
+page runs there as written. The last command downloads
 the packages SpaceAGORA's manifest records that your Julia depot does not hold yet, and refuses an environment directory that
 already exists and is not empty. Then run the tests as CI does, with two threads so
 that the conformance checks compare concurrent runs with sequential ones (the first
@@ -156,13 +157,18 @@ The pinned commit appears three times, and the workflow checks that they agree:
 version at that commit, and `[compat]` in `Project.toml` admits one SpaceAGORA
 release series. SpaceAGORA's `repin` command rewrites all of them for the release
 checked out beside this repository, and changes `[compat]` when the series
-changes. From the folder that holds both clones:
+changes. From the folder that holds both clones, fetch SpaceAGORA's tags, check
+out the release you move to and run `repin`. For the move to SpaceAGORA v0.6.0:
 
 ```bash
 git -C SpaceAGORA.jl fetch --tags
-git -C SpaceAGORA.jl checkout <the release tag, for example v0.5.0>
+git -C SpaceAGORA.jl checkout v0.6.0
 julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl repin package SpaceAGORAKitDemo.jl
 ```
+
+For a later release, put its tag in the second line. SpaceAGORA's release tags
+follow the `version` in its `Project.toml`; its older `v1.0.0` and `v2.0.0` tags
+predate that numbering and are not newer releases.
 
 `repin` changes the package's pin metadata, workflow references and compatible
 release series. Review those changes, then create a new environment and test the
@@ -176,8 +182,8 @@ julia --project=SpaceAGORAKitDemo-next-env SpaceAGORAKitDemo.jl/examples/run_in_
 
 An existing environment develops the sibling SpaceAGORA checkout by path, so
 changing that checkout also changes the source it loads. Use the new environment
-after repinning. This is how the repository moved from SpaceAGORA 0.3.1 to 0.5.0.
-`repin` exists from SpaceAGORA 0.4.0 on.
+after repinning. The repository moved from SpaceAGORA 0.3.1 to its later pins
+this way; `repin` exists from SpaceAGORA 0.4.0 on.
 
 ## Repository origin
 
