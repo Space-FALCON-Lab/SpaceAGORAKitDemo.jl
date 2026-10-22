@@ -16,10 +16,10 @@ which moves with each release it is tested against (see "Moving to another
 SpaceAGORA release" below). No SpaceAGORA code is copied here, and the code uses
 only SpaceAGORA's public names (the workflow's scan refuses internal ones).
 
-This version is developed and tested against **SpaceAGORA v0.5.0** (commit
-`41cd1f2ef7bcd4ef51f556487911e797ca411867`): the commit in `SpaceAGORASource.toml`
+This version is developed and tested against **SpaceAGORA v0.6.0** (commit
+`0487e8226107592b19221618f0f21f500cf2aacf`): the commit in `SpaceAGORASource.toml`
 and in the workflow call in `.github/workflows/ci.yml`, with `[compat]` admitting
-the 0.5 release series.
+the 0.6 release series.
 
 ## The three parts
 
@@ -55,7 +55,7 @@ says nothing about whether the methods are right for a mission.
 You need Julia 1.12 and git. Every command below runs from one folder, the one that
 holds the two clones and the environment. In an empty folder, clone this repository
 and SpaceAGORA side by side, check SpaceAGORA out at the commit this repository pins
-(the v0.5.0 release), and build a separate environment that develops that commit:
+(the v0.6.0 release), and build a separate environment that develops that commit:
 
 ```bash
 git clone https://github.com/Space-FALCON-Lab/SpaceAGORAKitDemo.jl.git
