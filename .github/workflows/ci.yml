@@ -11,8 +11,8 @@ permissions:
   contents: read
 jobs:
   spaceagora:
-    uses: Space-FALCON-Lab/SpaceAGORA.jl/.github/workflows/contributor-ci.yml@41cd1f2ef7bcd4ef51f556487911e797ca411867
+    uses: Space-FALCON-Lab/SpaceAGORA.jl/.github/workflows/contributor-ci.yml@0487e8226107592b19221618f0f21f500cf2aacf
     with:
-      spaceagora-rev: "41cd1f2ef7bcd4ef51f556487911e797ca411867"
+      spaceagora-rev: "0487e8226107592b19221618f0f21f500cf2aacf"
       kind: package
       examples: examples/run_in_simulation.jl

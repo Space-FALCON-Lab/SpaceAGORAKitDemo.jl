@@ -2,6 +2,6 @@
 # commit as the workflow call in .github/workflows/ci.yml. Change them together.
 # Users of the package install SpaceAGORA themselves; this file does not reach them.
 url = "https://github.com/Space-FALCON-Lab/SpaceAGORA.jl.git"
-rev = "41cd1f2ef7bcd4ef51f556487911e797ca411867"
+rev = "0487e8226107592b19221618f0f21f500cf2aacf"
 uuid = "afbfb69f-5c0b-4832-b760-43725dff8540"
-version = "0.5.0"
+version = "0.6.0"
