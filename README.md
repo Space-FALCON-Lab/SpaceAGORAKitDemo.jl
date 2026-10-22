@@ -157,8 +157,12 @@ The pinned commit appears three times, and the workflow checks that they agree:
 version at that commit, and `[compat]` in `Project.toml` admits one SpaceAGORA
 release series. SpaceAGORA's `repin` command rewrites all of them for the release
 checked out beside this repository, and changes `[compat]` when the series
-changes. From the folder that holds both clones, fetch SpaceAGORA's tags, check
-out the release you move to and run `repin`. For the move to SpaceAGORA v0.6.0:
+changes.
+
+The current pin is v0.6.0. To move to a later release, fetch SpaceAGORA's tags,
+check out that release and run `repin`, from the folder that holds both clones.
+These are the commands of the move to v0.6.0; for the next release, put its tag
+in the second line:
 
 ```bash
 git -C SpaceAGORA.jl fetch --tags
@@ -166,13 +170,16 @@ git -C SpaceAGORA.jl checkout v0.6.0
 julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl repin package SpaceAGORAKitDemo.jl
 ```
 
-For a later release, put its tag in the second line. SpaceAGORA's release tags
-follow the `version` in its `Project.toml`; its older `v1.0.0` and `v2.0.0` tags
-predate that numbering and are not newer releases.
+Run with v0.6.0 against the current pin, `repin` reports that the repository
+already pins that commit and changes nothing. SpaceAGORA's release tags follow
+the `version` in its `Project.toml`; its older `v1.0.0` and `v2.0.0` tags predate
+that numbering and are not newer releases.
 
 `repin` changes the package's pin metadata, workflow references and compatible
-release series. Review those changes, then create a new environment and test the
-new pair. The environment path below must be new or empty:
+release series. It does not rewrite this README: update the version sentence at
+the top of this page by hand. Review those changes, then create a new
+environment and test the new pair. The environment path below must be new or
+empty:
 
 ```bash
 julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl package SpaceAGORAKitDemo.jl SpaceAGORAKitDemo-next-env --manifest core
