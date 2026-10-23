@@ -9,7 +9,9 @@ workflow.
 This version is developed and tested against **SpaceAGORA v0.6.0** (commit
 `0487e8226107592b19221618f0f21f500cf2aacf`): the commit in `SpaceAGORASource.toml`
 and in the workflow call in `.github/workflows/ci.yml`, with `[compat]` admitting
-the 0.6 release series.
+the 0.6 and 0.7 series. The default pin remains v0.6.0; testing the 0.7
+development series requires an explicit core revision and the
+[release-update steps](#moving-to-another-spaceagora-release) below.
 
 Start with [setup and the example](#set-up-and-test), then follow the
 [source reading path](#read-and-change-the-example). The [test guide](#the-tests)
@@ -154,10 +156,10 @@ the behavior of the components.
 The pinned commit appears three times, and the workflow checks that they agree:
 `rev` in `SpaceAGORASource.toml`, and the ref after `@` and `spaceagora-rev` in
 `.github/workflows/ci.yml`. `version` in `SpaceAGORASource.toml` is SpaceAGORA's
-version at that commit, and `[compat]` in `Project.toml` admits one SpaceAGORA
-release series. SpaceAGORA's `repin` command rewrites all of them for the release
-checked out beside this repository, and changes `[compat]` when the series
-changes.
+version at that commit, and `[compat]` in `Project.toml` admits the supported
+SpaceAGORA release series. SpaceAGORA's `repin` command updates the pins for the
+release checked out beside this repository. It changes `[compat]` only when the
+range does not admit the selected core version.
 
 The current pin is v0.6.0. To move to a later release, fetch SpaceAGORA's tags,
 check out that release and run `repin`, from the folder that holds both clones.
