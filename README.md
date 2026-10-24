@@ -6,11 +6,11 @@ components, built on SpaceAGORA's public interface only, kept in a repository of
 their own, and tested with SpaceAGORA's conformance checks and its reusable CI
 workflow.
 
-This version is developed and tested against **SpaceAGORA v0.6.0** (commit
-`0487e8226107592b19221618f0f21f500cf2aacf`): the commit in `SpaceAGORASource.toml`
+This version is developed and tested against **SpaceAGORA v0.7.0** (commit
+`bec28fcc348b48c6e807d007f9a5009e253e8340`): the commit in `SpaceAGORASource.toml`
 and in the workflow call in `.github/workflows/ci.yml`, with `[compat]` admitting
-the 0.6 and 0.7 series. The default pin remains v0.6.0; testing the 0.7
-development series requires an explicit core revision and the
+the 0.6 and 0.7 series. The default pin is the published v0.7.0 commit. To test
+a different core revision, follow the
 [release-update steps](#moving-to-another-spaceagora-release) below.
 
 Start with [setup and the example](#set-up-and-test), then follow the
@@ -57,7 +57,7 @@ not establish that the methods are right for a mission.
 You need Julia 1.12 and git. Every command below runs from one folder, the one that
 holds the two clones and the environment. In an empty folder, clone this repository
 and SpaceAGORA side by side, check SpaceAGORA out at the commit this repository pins
-(the v0.6.0 release), and build a separate environment that develops that commit:
+(the v0.7.0 release), and build a separate environment that develops that commit:
 
 ```bash
 git clone https://github.com/Space-FALCON-Lab/SpaceAGORAKitDemo.jl.git
@@ -161,18 +161,18 @@ SpaceAGORA release series. SpaceAGORA's `repin` command updates the pins for the
 release checked out beside this repository. It changes `[compat]` only when the
 range does not admit the selected core version.
 
-The current pin is v0.6.0. To move to a later release, fetch SpaceAGORA's tags,
+The current pin is v0.7.0. To move to a later release, fetch SpaceAGORA's tags,
 check out that release and run `repin`, from the folder that holds both clones.
-These are the commands of the move to v0.6.0; for the next release, put its tag
+These are the commands of the move to v0.7.0; for the next release, put its tag
 in the second line:
 
 ```bash
 git -C SpaceAGORA.jl fetch --tags
-git -C SpaceAGORA.jl checkout v0.6.0
+git -C SpaceAGORA.jl checkout v0.7.0
 julia --startup-file=no --project=@stdlib SpaceAGORA.jl/scripts/contributor_environment.jl repin package SpaceAGORAKitDemo.jl
 ```
 
-Run with v0.6.0 against the current pin, `repin` reports that the repository
+Run with v0.7.0 against the current pin, `repin` reports that the repository
 already pins that commit and changes nothing. SpaceAGORA's release tags follow
 the `version` in its `Project.toml`; its older `v1.0.0` and `v2.0.0` tags predate
 that numbering and are not newer releases.
