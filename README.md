@@ -225,3 +225,7 @@ refuses internal ones).
 
 The numbers this repository's runs print are outputs of small demonstration
 methods, not validated results.
+
+## Contributors
+
+- [Giusy Falcone](https://github.com/gfalcon2)
